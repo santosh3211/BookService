@@ -2,6 +2,7 @@ package com.epam.book.controllers;
 
 import com.epam.book.model.Book;
 import com.epam.book.service.BookService;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,9 +24,16 @@ public class BookRestController {
     BookService bookService;
 
     @GetMapping(value = "/books")
+    @HystrixCommand(fallbackMethod = "getDefaultBooks")
     public ResponseEntity<List<Book>> getAllBooks() {
         logger.info("Fetching books from database");
         List<Book> bookList = bookService.getAllBooks();
+        return new ResponseEntity<List<Book>>(bookList, HttpStatus.OK);
+    }
+    public ResponseEntity<List<Book>> getDefaultBooks() {
+        logger.info("Fetching books from database");
+        List<Book> bookList = new ArrayList<>();
+        bookList.add(new Book(1L,"Spring Clould","SSahu",new Date(),new Date()));
         return new ResponseEntity<List<Book>>(bookList, HttpStatus.OK);
     }
 

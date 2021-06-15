@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Date;
+
 
 @Data
 @AllArgsConstructor
@@ -17,5 +19,7 @@ public class Book {
     private Long id;
     private String bookName;
     private String bookAuther;
+    private Date created;
+    private  Date updated;
 
 }
